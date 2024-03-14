@@ -6,7 +6,8 @@ app.use(express.json());
 app.use(cors());
 const morgan = require("morgan");
 
-const PORT = 3490;
+const PORT = process.env.PORT || 3490;
+
 persons = [
   { id: 1, name: "Liam", number: "555-1234" },
   { id: 2, name: "Emma", number: "555-5678" },
