@@ -20,7 +20,7 @@ app.get("/info", (req, resp) => {
     color:white;
     text-align:center;
     padding:1em'>
-    This is the phonebook API</h1>
+        This is the phonebook API</h1>
     <p>There are actually, ${result.length} persons in the phonebook.</p>
     <footer style='
     width:100%;
@@ -41,8 +41,8 @@ app.get("/api/persons/:id", (req, resp, next) => {
 });
 
 app.delete("/api/persons/:id", (req, resp, next) => {
-    Person.findByIdAndDelete(req.params.id).
-        then(result => resp.status(204).end())
+    Person.findByIdAndDelete(req.params.id)
+        .then(result => resp.status(204).end())
         .catch(error => next(error));
 });
 
