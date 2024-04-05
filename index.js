@@ -46,36 +46,23 @@ app.delete("/api/persons/:id", (req, resp, next) => {
         .catch(error => next(error));
 });
 
-app.post("/api/persons", (req, resp) => {
+app.post("/api/persons", (req, resp, next) => {
     const data = req.body;
-    if (!data.name || !data.number) {
-        return resp.status(400).json({
-            error: 'content missing'
-        });
-    }
-    // if (persons.some(prsn => prsn.name === data.name)){
-    //     return resp.status(400).json({
-    //         error: 'this name alaready exists'
-    //     })
-    // }
-    // if (persons.some(prsn => prsn.number === data.number)){
-    //     return resp.status(400).json({
-    //         error: 'this number alaready exists'
-    //     })
-    // }
     const person =  new Person({
-        //    id : Math.floor(Math.random(0,100000000000)*100000000000),
         name : data.name,
         number: data.number
     });
 
     person.save()
-        .then(svdPrsn => resp.json(svdPrsn));
+        .then(svdPrsn => resp.json(svdPrsn))
+        .catch(error => next(error));
 });
 
 app.put("/api/persons/:id", (req, resp, next) => {
     const {name, number} = req.body;
-    Person.findByIdAndUpdate(req.params.id, {name, number}, { new : true})
+    Person.findByIdAndUpdate(req.params.id,
+                             {name, number},
+                             { new : true, runValidators: true, context: 'query'})
     .then(updatedPerson => resp.json(updatedPerson))
     .catch(error => next(error));
 });
@@ -86,9 +73,10 @@ const unknownEndpoint = (req, resp) => {
 app.use(unknownEndpoint);
 
 const errorHandler = (error, req, resp, next) =>{
-    console.log(error);
     if (error.name === 'CastError'){
         return resp.status(400).send({ error: 'mlformatted id'});
+    } else if (error.name === 'ValidationError'){
+        return resp.status(400).send({error: error.message})
     }
     next(error);
 }
