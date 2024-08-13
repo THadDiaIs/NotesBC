@@ -18,7 +18,7 @@ const Person = mongoose.model("'Person", personSchema);
 
 if (process.argv.length < 4){
   Person.find({}).then(result => {
-    console.log("Phonebook:")
+    console.log("Phonebook:");
     result.forEach(person => {
       console.log(`${person.name} : ${person.number}`);
     });
